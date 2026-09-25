@@ -2,8 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/Button";
+import { Fraunces } from "next/font/google";
 import { setIdentity } from "@/lib/client-identity";
+
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+});
 
 function defaultDeadline(): string {
   const d = new Date();
@@ -21,6 +27,9 @@ function defaultRange(): { start: string; end: string } {
   const iso = (d: Date) => d.toISOString().slice(0, 10);
   return { start: iso(s), end: iso(e) };
 }
+
+const FIELD =
+  "tap-target w-full rounded-xl border border-cream-dim bg-cream px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-grape";
 
 export default function HomePage() {
   const router = useRouter();
@@ -79,120 +88,184 @@ export default function HomePage() {
   }
 
   return (
-    <main className="flex-1 flex flex-col items-center px-5 py-10 sm:py-16">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 text-primary font-extrabold text-2xl mb-2">
-            <span>{"\u{1F9ED}"}</span> Tripwise
+    <main className={`${fraunces.variable} flex-1 flex flex-col bg-cream`}>
+      {/* ---------- HERO ---------- */}
+      <section className="relative overflow-hidden bg-ink text-cream">
+        <div className="absolute -top-24 -right-24 h-[420px] w-[420px] rounded-full blur-3xl opacity-80"
+          style={{ background: "radial-gradient(circle at 32% 30%, var(--flamingo), var(--grape) 45%, var(--lagoon) 85%)" }}
+        />
+        <div className="grain absolute -top-24 -right-24 h-[420px] w-[420px] rounded-full" />
+
+        <div className="relative px-5 pt-8 pb-20 sm:pt-12 sm:pb-28">
+          <div className="max-w-md mx-auto sm:max-w-2xl">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-cream/60 mb-10">
+              <span>{"\u{1F9ED}"}</span> Tripwise
+            </div>
+
+            <h1 className="font-[family-name:var(--font-fraunces)] text-[2.75rem] sm:text-6xl leading-[1.05] tracking-tight">
+              One trip.
+              <br />
+              <span className="italic font-normal">Actually decided.</span>
+            </h1>
+
+            <p className="mt-6 max-w-md text-cream/70 text-base sm:text-lg leading-relaxed">
+              No more 1,200-message group chats. Everyone submits preferences once, the app scores the fit, and you
+              vote. It never picks for you.
+            </p>
+
+            <div className="mt-9 flex flex-wrap items-center gap-4">
+              <button
+                type="button"
+                onClick={handleDemo}
+                disabled={demoLoading}
+                className="tap-target inline-flex items-center gap-2 rounded-full bg-flamingo px-6 py-3.5 text-sm font-semibold text-ink hover:brightness-95 transition disabled:opacity-50"
+              >
+                {demoLoading ? "Setting up the demo..." : `${"⚡"} Load demo group`}
+              </button>
+              <a href="#create" className="text-sm font-semibold text-cream/80 hover:text-cream underline underline-offset-4">
+                or build your own room {"↓"}
+              </a>
+            </div>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold leading-tight">
-            One link. Five friends. <span className="text-coral">One trip</span>, decided.
-          </h1>
-          <p className="text-muted mt-3 text-sm sm:text-base">
-            No more 1,200-message group chats. Everyone submits preferences once, the app scores the fit, and you
-            vote. It never picks for you.
-          </p>
         </div>
 
-        <button
-          type="button"
-          onClick={handleDemo}
-          disabled={demoLoading}
-          className="tap-target w-full mb-6 rounded-2xl border-2 border-dashed border-primary bg-primary-light px-4 py-3 text-sm font-semibold text-primary-dark hover:bg-primary/10 transition-colors disabled:opacity-50"
+        {/* torn-paper edge into the cream section */}
+        <svg
+          className="absolute bottom-0 left-0 w-full text-cream"
+          viewBox="0 0 1440 44"
+          preserveAspectRatio="none"
+          style={{ height: 32 }}
         >
-          {demoLoading ? "Setting up the demo..." : "⚡ Load demo group — see the full flow in 30s"}
-        </button>
+          <path
+            fill="currentColor"
+            d="M0,26 L60,12 L120,30 L180,8 L240,26 L300,6 L360,24 L420,14 L480,30 L540,10 L600,26 L660,16 L720,30 L780,6 L840,24 L900,14 L960,30 L1020,10 L1080,26 L1140,16 L1200,30 L1260,10 L1320,24 L1380,14 L1440,26 L1440,44 L0,44 Z"
+          />
+        </svg>
+      </section>
 
-        {error && (
-          <div className="mb-4 rounded-xl bg-red-bg text-red text-sm px-4 py-3 font-medium">{error}</div>
-        )}
+      {/* ---------- CREATE ROOM ---------- */}
+      <section id="create" className="px-5 py-16 sm:py-20">
+        <div className="max-w-md mx-auto sm:max-w-lg">
+          <span className="inline-block rounded-full bg-olive/10 text-olive-dark text-xs font-bold uppercase tracking-wider px-3 py-1 mb-4">
+            New room
+          </span>
 
-        <form onSubmit={handleCreate} className="space-y-4 bg-card border border-border rounded-2xl p-5">
-          <h2 className="font-bold text-lg">Create a trip room</h2>
+          {error && (
+            <div className="mb-4 rounded-xl bg-red-bg text-red text-sm px-4 py-3 font-medium">{error}</div>
+          )}
 
-          <div>
-            <label className="text-sm font-semibold block mb-1.5">Trip name</label>
-            <input
-              required
-              value={tripName}
-              onChange={(e) => setTripName(e.target.value)}
-              placeholder="e.g. The Trip We Keep Postponing"
-              className="tap-target w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-          </div>
+          <form
+            onSubmit={handleCreate}
+            className="space-y-4 bg-white border border-cream-dim rounded-[2rem] p-6 sm:p-8 shadow-[0_20px_60px_-15px_rgba(20,18,15,0.25)]"
+          >
+            <h2 className="font-[family-name:var(--font-fraunces)] text-3xl leading-tight">Create a trip room</h2>
 
-          <div>
-            <label className="text-sm font-semibold block mb-1.5">Your name</label>
-            <input
-              required
-              value={yourName}
-              onChange={(e) => setYourName(e.target.value)}
-              placeholder="Riya"
-              className="tap-target w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-          </div>
+            <div>
+              <label className="text-sm font-semibold block mb-1.5">Trip name</label>
+              <input
+                required
+                value={tripName}
+                onChange={(e) => setTripName(e.target.value)}
+                placeholder="e.g. The Trip We Keep Postponing"
+                className={FIELD}
+              />
+            </div>
 
-          <div>
-            <label className="text-sm font-semibold block mb-1.5">Your 4 friends</label>
-            <div className="space-y-2">
-              {friends.map((f, i) => (
+            <div>
+              <label className="text-sm font-semibold block mb-1.5">Your name</label>
+              <input
+                required
+                value={yourName}
+                onChange={(e) => setYourName(e.target.value)}
+                placeholder="Riya"
+                className={FIELD}
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-semibold block mb-1.5">Your 4 friends</label>
+              <div className="space-y-2">
+                {friends.map((f, i) => (
+                  <input
+                    key={i}
+                    required
+                    value={f}
+                    onChange={(e) => {
+                      const next = [...friends];
+                      next[i] = e.target.value;
+                      setFriends(next);
+                    }}
+                    placeholder={`Friend ${i + 1}`}
+                    className={FIELD}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm font-semibold block mb-1.5">Response deadline</label>
+              <input
+                required
+                type="datetime-local"
+                value={deadline}
+                onChange={(e) => setDeadline(e.target.value)}
+                className={FIELD}
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-semibold block mb-1.5">Rough date range for the trip</label>
+              <div className="flex items-center gap-2">
                 <input
-                  key={i}
                   required
-                  value={f}
-                  onChange={(e) => {
-                    const next = [...friends];
-                    next[i] = e.target.value;
-                    setFriends(next);
-                  }}
-                  placeholder={`Friend ${i + 1}`}
-                  className="tap-target w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  type="date"
+                  value={dateRangeStart}
+                  onChange={(e) => setDateRangeStart(e.target.value)}
+                  className={FIELD}
                 />
-              ))}
+                <span className="text-muted">to</span>
+                <input
+                  required
+                  type="date"
+                  value={dateRangeEnd}
+                  onChange={(e) => setDateRangeEnd(e.target.value)}
+                  className={FIELD}
+                />
+              </div>
             </div>
-          </div>
 
-          <div>
-            <label className="text-sm font-semibold block mb-1.5">Response deadline</label>
-            <input
-              required
-              type="datetime-local"
-              value={deadline}
-              onChange={(e) => setDeadline(e.target.value)}
-              className="tap-target w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-          </div>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="tap-target w-full mt-2 rounded-xl bg-ink text-cream font-semibold py-3.5 hover:bg-ink-soft transition disabled:opacity-50"
+            >
+              {submitting ? "Creating..." : "Create room & get share link"}
+            </button>
+          </form>
+        </div>
+      </section>
 
-          <div>
-            <label className="text-sm font-semibold block mb-1.5">Rough date range for the trip</label>
-            <div className="flex items-center gap-2">
-              <input
-                required
-                type="date"
-                value={dateRangeStart}
-                onChange={(e) => setDateRangeStart(e.target.value)}
-                className="tap-target w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <span className="text-muted">to</span>
-              <input
-                required
-                type="date"
-                value={dateRangeEnd}
-                onChange={(e) => setDateRangeEnd(e.target.value)}
-                className="tap-target w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              />
+      {/* ---------- HOW IT WORKS ---------- */}
+      <section className="px-5 pb-20">
+        <div className="max-w-md mx-auto sm:max-w-3xl grid gap-4 sm:grid-cols-3">
+          {[
+            { tag: "01", title: "AI suggests", body: "8–10 candidate trips, scored against everyone's dates and budget." },
+            { tag: "02", title: "Code scores", body: "A plain veto filter drops anything that breaks a hard no. No AI opinions here." },
+            { tag: "03", title: "You decide", body: "Everyone votes. Once it's unanimous, the trip locks — for real." },
+          ].map((f) => (
+            <div key={f.tag} className="rounded-2xl bg-olive text-cream p-5">
+              <div className="font-[family-name:var(--font-fraunces)] italic text-2xl text-cream/50 mb-2">{f.tag}</div>
+              <div className="font-bold mb-1">{f.title}</div>
+              <p className="text-sm text-cream/75 leading-relaxed">{f.body}</p>
             </div>
-          </div>
+          ))}
+        </div>
+      </section>
 
-          <Button type="submit" disabled={submitting} className="w-full mt-2">
-            {submitting ? "Creating..." : "Create room & get share link"}
-          </Button>
-        </form>
-
-        <p className="text-center text-xs text-muted mt-6">
-          The app suggests and explains. It never picks the winner — only your group does.
-        </p>
-      </div>
+      {/* ---------- FOOTER ---------- */}
+      <footer className="bg-ink text-cream/50 text-center text-xs py-6 px-5">
+        The app suggests and explains. It never picks the winner — only your group does.
+      </footer>
     </main>
   );
 }

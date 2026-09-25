@@ -17,6 +17,17 @@
   --amber-bg: #fdf1dc;
   --red: #e0484f;
   --red-bg: #fbe9e9;
+
+  /* Editorial palette - currently used on the home page only */
+  --ink: #16140f;
+  --ink-soft: #26241d;
+  --cream: #f3eee2;
+  --cream-dim: #e9e2d2;
+  --olive: #4c4b34;
+  --olive-dark: #37361f;
+  --grape: #6d4aff;
+  --flamingo: #ff5caa;
+  --lagoon: #14b8a6;
 }
 
 @theme inline {
@@ -36,7 +47,19 @@
   --color-amber-bg: var(--amber-bg);
   --color-red: var(--red);
   --color-red-bg: var(--red-bg);
+
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-cream: var(--cream);
+  --color-cream-dim: var(--cream-dim);
+  --color-olive: var(--olive);
+  --color-olive-dark: var(--olive-dark);
+  --color-grape: var(--grape);
+  --color-flamingo: var(--flamingo);
+  --color-lagoon: var(--lagoon);
+
   --font-sans: var(--font-inter);
+  --font-serif: var(--font-fraunces);
 }
 
 body {
@@ -66,4 +89,15 @@ body {
 
 .animate-fade-in-up {
   animation: fade-in-up 0.25s ease-out;
+}
+
+/* Fractal-noise overlay for the grainy gradient blobs on the home hero. */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+  opacity: 0.35;
+  pointer-events: none;
 }

@@ -72,6 +72,7 @@ export async function POST(req: NextRequest) {
 
   await db.createTrip(trip);
   await db.createMembers(members);
+  await db.updateTrip(tripId, { creatorMemberId: creatorId });
 
   return NextResponse.json({ tripId, memberId: creatorId, token: creatorToken });
 }

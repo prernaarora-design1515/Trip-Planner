@@ -46,6 +46,7 @@ export async function POST() {
 
   await db.createTrip(trip);
   await db.createMembers(members);
+  await db.updateTrip(tripId, { creatorMemberId: memberIds[0] });
 
   const responses: TripResponse[] = spec.members.map((m, i) => ({
     id: newId("resp"),

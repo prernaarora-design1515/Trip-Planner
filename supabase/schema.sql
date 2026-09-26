@@ -1,27 +1,29 @@
 -- Tripwise schema. Mirrors the shapes in src/lib/types.ts so swapping
 -- src/lib/db.ts for Supabase calls is a mechanical change, not a redesign.
-
-create extension if not exists "pgcrypto";
+--
+-- IDs are `text`, not `uuid`: the app generates its own prefixed ids
+-- (e.g. "trip_<uuid>", "mem_<uuid>") via lib/id.ts and passes them in on
+-- insert, rather than letting Postgres generate bare uuids.
 
 create table trips (
-  id uuid primary key default gen_random_uuid(),
+  id text primary key,
   name text not null,
-  creator_member_id uuid, -- fk added below, after members exists
+  creator_member_id text, -- fk added below, after members exists
   deadline timestamptz not null,
   date_range_start date not null,
   date_range_end date not null,
   status text not null default 'collecting'
     check (status in ('collecting', 'planning', 'ready', 'decided', 'split')),
   voting_round int not null default 1,
-  allowed_option_ids uuid[], -- null = all shortlisted options are votable
-  decided_option_id uuid,
+  allowed_option_ids text[], -- null = all shortlisted options are votable
+  decided_option_id text,
   planned_at timestamptz,
   created_at timestamptz not null default now()
 );
 
 create table members (
-  id uuid primary key default gen_random_uuid(),
-  trip_id uuid not null references trips (id) on delete cascade,
+  id text primary key,
+  trip_id text not null references trips (id) on delete cascade,
   name text not null,
   device_token text, -- set on first "claim" from the join screen
   "order" int not null
@@ -34,9 +36,9 @@ alter table trips
 create index members_trip_id_idx on members (trip_id);
 
 create table responses (
-  id uuid primary key default gen_random_uuid(),
-  trip_id uuid not null references trips (id) on delete cascade,
-  member_id uuid not null references members (id) on delete cascade,
+  id text primary key,
+  trip_id text not null references trips (id) on delete cascade,
+  member_id text not null references members (id) on delete cascade,
   budget_min int not null,
   budget_max int not null,
   date_start date not null,
@@ -55,8 +57,8 @@ create index responses_trip_id_idx on responses (trip_id);
 -- Shortlisted, scored candidates for a trip (post veto-filter + scorer).
 -- Only ever 3 rows per trip per planning run.
 create table candidates (
-  id uuid primary key default gen_random_uuid(),
-  trip_id uuid not null references trips (id) on delete cascade,
+  id text primary key,
+  trip_id text not null references trips (id) on delete cascade,
   destination text not null,
   date_start date not null,
   date_end date not null,
@@ -74,11 +76,11 @@ create table candidates (
 create index candidates_trip_id_idx on candidates (trip_id);
 
 create table votes (
-  id uuid primary key default gen_random_uuid(),
-  trip_id uuid not null references trips (id) on delete cascade,
-  member_id uuid not null references members (id) on delete cascade,
+  id text primary key,
+  trip_id text not null references trips (id) on delete cascade,
+  member_id text not null references members (id) on delete cascade,
   round int not null default 1,
-  option_id uuid not null references candidates (id) on delete cascade,
+  option_id text not null references candidates (id) on delete cascade,
   voted_at timestamptz not null default now(),
   unique (member_id, round) -- one vote per member per voting round, never editable
 );

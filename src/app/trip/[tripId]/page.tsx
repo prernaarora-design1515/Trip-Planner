@@ -99,10 +99,13 @@ export default function TripStatusPage({ params }: { params: Promise<{ tripId: s
             />
             <button
               onClick={() => {
-                navigator.clipboard.writeText(shareUrl).then(() => {
-                  setCopied(true);
-                  setTimeout(() => setCopied(false), 1500);
-                });
+                navigator.clipboard.writeText(shareUrl).then(
+                  () => {
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 1500);
+                  },
+                  () => setError("Couldn't copy — select and copy the link manually"),
+                );
               }}
               className="tap-target shrink-0 rounded-xl bg-primary text-white px-3.5 py-2 text-xs font-semibold"
             >

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Fraunces } from "next/font/google";
 import { setIdentity } from "@/lib/client-identity";
-import { PolaroidWall } from "@/components/PolaroidWall";
+import { PhotoStack } from "@/components/PhotoStack";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -31,6 +31,8 @@ function defaultRange(): { start: string; end: string } {
 
 const FIELD =
   "tap-target w-full rounded-xl border border-cream-dim bg-cream px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-grape";
+
+const DOTS = ["bg-grape", "bg-flamingo", "bg-lagoon", "bg-olive", "bg-amber"];
 
 export default function HomePage() {
   const router = useRouter();
@@ -92,45 +94,40 @@ export default function HomePage() {
     <main className={`${fraunces.variable} flex-1 flex flex-col bg-cream`}>
       {/* ---------- HERO ---------- */}
       <section className="relative overflow-hidden bg-ink text-cream">
-        <div className="absolute -top-24 -right-24 h-[420px] w-[420px] rounded-full blur-3xl opacity-80"
-          style={{ background: "radial-gradient(circle at 32% 30%, var(--flamingo), var(--grape) 45%, var(--lagoon) 85%)" }}
-        />
-        <div className="grain absolute -top-24 -right-24 h-[420px] w-[420px] rounded-full" />
+        <div className="relative px-5 pt-10 pb-24 sm:pt-14 sm:pb-28">
+          <div className="max-w-md mx-auto sm:max-w-5xl sm:grid sm:grid-cols-2 sm:gap-10 sm:items-center">
+            <div>
+              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-cream/60 mb-8">
+                <span>{"\u{1F9ED}"}</span> Tripwise
+              </div>
 
-        <div className="relative px-5 pt-8 pb-20 sm:pt-12 sm:pb-28">
-          <div className="max-w-md mx-auto sm:max-w-2xl">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-cream/60 mb-10">
-              <span>{"\u{1F9ED}"}</span> Tripwise
+              <h1 className="font-[family-name:var(--font-fraunces)] text-[2.75rem] sm:text-6xl leading-[1.05] tracking-tight">
+                One trip.
+                <br />
+                <span className="italic font-normal">Actually decided.</span>
+              </h1>
+
+              <p className="mt-5 max-w-md text-cream/70 text-base sm:text-lg">
+                17 opinions. 46 messages. Somehow, still no plan.
+              </p>
+
+              <div className="mt-8 flex flex-wrap items-center gap-4">
+                <button
+                  type="button"
+                  onClick={handleDemo}
+                  disabled={demoLoading}
+                  className="tap-target inline-flex items-center gap-2 rounded-full bg-flamingo px-6 py-3.5 text-sm font-semibold text-ink hover:brightness-95 transition disabled:opacity-50"
+                >
+                  {demoLoading ? "One sec..." : "See it decide →"}
+                </button>
+                <a href="#create" className="text-sm text-cream/60 hover:text-cream underline underline-offset-4">
+                  or plan your own {"↓"}
+                </a>
+              </div>
             </div>
 
-            <h1 className="font-[family-name:var(--font-fraunces)] text-[2.75rem] sm:text-6xl leading-[1.05] tracking-tight">
-              One trip.
-              <br />
-              <span className="italic font-normal">Actually decided.</span>
-            </h1>
-
-            <p className="mt-6 max-w-md text-xl sm:text-2xl font-[family-name:var(--font-fraunces)] italic text-flamingo">
-              17 opinions. 46 messages. Nobody actually decides.
-            </p>
-
-            <p className="mt-4 max-w-md text-cream/70 text-base sm:text-lg leading-relaxed">
-              Somewhere in your group chat is a trip that&rsquo;s been &ldquo;happening soon&rdquo; since March. Everyone fills in
-              their own preferences once, the app quietly does the math, and your group votes on an actual shortlist
-              instead of arguing in circles. It never picks for you — it just makes it impossible to keep stalling.
-            </p>
-
-            <div className="mt-9 flex flex-wrap items-center gap-4">
-              <button
-                type="button"
-                onClick={handleDemo}
-                disabled={demoLoading}
-                className="tap-target inline-flex items-center gap-2 rounded-full bg-flamingo px-6 py-3.5 text-sm font-semibold text-ink hover:brightness-95 transition disabled:opacity-50"
-              >
-                {demoLoading ? "Rounding up some fake friends..." : "See it decide (fake friends included)"}
-              </button>
-              <a href="#create" className="text-sm font-semibold text-cream/80 hover:text-cream underline underline-offset-4">
-                or subject your real friends to this {"↓"}
-              </a>
+            <div className="mt-16 sm:mt-0">
+              <PhotoStack />
             </div>
           </div>
         </div>
@@ -149,32 +146,73 @@ export default function HomePage() {
         </svg>
       </section>
 
-      {/* ---------- THE (FICTIONAL) FRIEND GROUP ---------- */}
-      <section className="px-5 pt-16 pb-4 sm:pt-20">
-        <div className="max-w-md mx-auto sm:max-w-3xl text-center">
-          <span className="inline-block rounded-full bg-olive/10 text-olive-dark text-xs font-bold uppercase tracking-wider px-3 py-1 mb-4">
-            The cast
-          </span>
-          <h2 className="font-[family-name:var(--font-fraunces)] text-3xl sm:text-4xl leading-tight">
-            Meet the friends who can&apos;t decide anything.
-          </h2>
-          <p className="mt-3 text-muted max-w-md mx-auto">
-            Completely made up for this demo. Suspiciously accurate to every group chat you&apos;ve ever been in.
-          </p>
+      {/* ---------- THE PRODUCT, IN ONE GLANCE ---------- */}
+      <section className="px-5 py-20 sm:py-28">
+        <div className="max-w-md mx-auto sm:max-w-3xl flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8">
+          <div className="w-full sm:w-64 bg-white border border-cream-dim rounded-2xl p-4 shadow-[0_16px_40px_-15px_rgba(20,18,15,0.2)] -rotate-2">
+            <div className="text-xs font-semibold text-muted mb-3">Which one?</div>
+            <div className="space-y-2">
+              {["Goa", "Rishikesh", "Manali"].map((place) => (
+                <div key={place} className="flex items-center justify-between rounded-xl bg-cream px-3 py-2.5">
+                  <span className="text-sm font-semibold">{place}</span>
+                  <div className="flex -space-x-1">
+                    {DOTS.map((c, i) => (
+                      <span key={i} className={`h-2.5 w-2.5 rounded-full ${c} ring-2 ring-cream`} />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="font-[family-name:var(--font-fraunces)] italic text-3xl text-muted rotate-90 sm:rotate-0">
+            {"→"}
+          </div>
+
+          <div className="w-full sm:w-64 bg-white border border-cream-dim rounded-2xl p-6 shadow-[0_16px_40px_-15px_rgba(20,18,15,0.2)] rotate-2 text-center">
+            <div className="text-2xl mb-1">{"\u{1F389}"}</div>
+            <div className="font-[family-name:var(--font-fraunces)] text-2xl leading-tight">
+              Okay.
+              <br />
+              <span className="italic">Goa.</span>
+            </div>
+            <div className="flex justify-center -space-x-1.5 mt-3">
+              {DOTS.map((c, i) => (
+                <span key={i} className={`h-6 w-6 rounded-full ${c} ring-2 ring-white`} />
+              ))}
+              <span className="h-6 w-6 rounded-full bg-cream-dim ring-2 ring-white flex items-center justify-center text-[10px] font-bold text-muted">
+                +2
+              </span>
+            </div>
+          </div>
         </div>
 
-        <div className="max-w-md mx-auto sm:max-w-4xl mt-12 mb-6">
-          <PolaroidWall />
+        <p className="text-center text-muted mt-10 font-[family-name:var(--font-fraunces)] italic text-lg">
+          Everyone weighs in. The group decides.
+        </p>
+      </section>
+
+      {/* ---------- THREE LINES ---------- */}
+      <section className="bg-ink text-cream px-5 py-20 sm:py-28">
+        <div className="max-w-md mx-auto sm:max-w-3xl grid gap-10 sm:grid-cols-3 text-center">
+          {["No 1,200-message debate.", "Everyone gets a say.", "Someone finally books it."].map((line) => (
+            <div key={line}>
+              <p className="font-[family-name:var(--font-fraunces)] italic text-xl sm:text-2xl leading-snug">{line}</p>
+              <span className="inline-block w-10 h-[2px] bg-flamingo mt-4" />
+            </div>
+          ))}
         </div>
       </section>
 
       {/* ---------- CREATE ROOM ---------- */}
-      <section id="create" className="px-5 py-16 sm:py-20">
-        <div className="max-w-md mx-auto sm:max-w-lg">
-          <span className="inline-block rounded-full bg-olive/10 text-olive-dark text-xs font-bold uppercase tracking-wider px-3 py-1 mb-4">
-            Your turn
-          </span>
+      <section id="create" className="px-5 py-20 sm:py-28">
+        <div className="max-w-md mx-auto sm:max-w-lg text-center mb-8">
+          <h2 className="font-[family-name:var(--font-fraunces)] text-3xl sm:text-4xl leading-tight">
+            Your turn.
+          </h2>
+        </div>
 
+        <div className="max-w-md mx-auto sm:max-w-lg">
           {error && (
             <div className="mb-4 rounded-xl bg-red-bg text-red text-sm px-4 py-3 font-medium">{error}</div>
           )}
@@ -183,11 +221,6 @@ export default function HomePage() {
             onSubmit={handleCreate}
             className="space-y-4 bg-white border border-cream-dim rounded-[2rem] p-6 sm:p-8 shadow-[0_20px_60px_-15px_rgba(20,18,15,0.25)]"
           >
-            <div>
-              <h2 className="font-[family-name:var(--font-fraunces)] text-3xl leading-tight">Start the group chat spin-off</h2>
-              <p className="text-sm text-muted mt-1.5">Real trip, real friends, hopefully less chaos.</p>
-            </div>
-
             <div>
               <label className="text-sm font-semibold block mb-1.5">Trip name</label>
               <input
@@ -273,26 +306,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ---------- HOW IT WORKS ---------- */}
-      <section className="px-5 pb-20">
-        <div className="max-w-md mx-auto sm:max-w-3xl grid gap-4 sm:grid-cols-3">
-          {[
-            { tag: "01", title: "The AI throws out ideas", body: "8–10 places that could work, based on everyone's dates and budget. Just brainstorming, nothing final." },
-            { tag: "02", title: "The code plays bad cop", body: "Breaks someone's hard no or busts their budget? Gone. No AI vibes here — just math, applied unfairly to everyone equally." },
-            { tag: "03", title: "You actually decide", body: "Everyone votes once. The second it's unanimous, that's the trip — no take-backs, no reopening old arguments." },
-          ].map((f) => (
-            <div key={f.tag} className="rounded-2xl bg-olive text-cream p-5">
-              <div className="font-[family-name:var(--font-fraunces)] italic text-2xl text-cream/50 mb-2">{f.tag}</div>
-              <div className="font-bold mb-1">{f.title}</div>
-              <p className="text-sm text-cream/75 leading-relaxed">{f.body}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* ---------- FOOTER ---------- */}
       <footer className="bg-ink text-cream/50 text-center text-xs py-6 px-5">
-        The app suggests and explains. It never picks the winner — that argument is all yours.
+        It suggests. It never decides. That part&apos;s still on you.
       </footer>
     </main>
   );

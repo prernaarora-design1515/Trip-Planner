@@ -91,6 +91,30 @@ body {
   animation: fade-in-up 0.25s ease-out;
 }
 
+@keyframes cloud-drift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(160vw);
+  }
+}
+
+.cloud-drift {
+  animation: cloud-drift 140s linear infinite;
+}
+
+.cloud-drift-slow {
+  animation: cloud-drift 220s linear infinite;
+  animation-delay: -90s;
+}
+
+/* Legibility insurance for text sitting directly on the scroll-driven sky,
+   whose color ranges from warm dusk through deep night to pale dawn. */
+.scene-text {
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.45);
+}
+
 /* Fractal-noise overlay for the grainy gradient blobs on the home hero. */
 .grain::after {
   content: "";

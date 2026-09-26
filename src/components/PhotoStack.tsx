@@ -9,65 +9,76 @@ const caveat = Caveat({
   weight: ["500", "700"],
 });
 
-interface Photo {
+interface PolaroidProps {
   src: string;
   alt: string;
-  wrapClass: string;
-  rotate: string;
-  note?: string;
-  noteClass?: string;
+  caption: string;
+  rotate?: string;
+  className?: string;
 }
 
-const PHOTOS: Photo[] = [
+export function Polaroid({ src, alt, caption, rotate = "", className = "" }: PolaroidProps) {
+  return (
+    <div className={`${caveat.variable} bg-cream p-2 pb-1.5 shadow-[0_16px_32px_-10px_rgba(0,0,0,0.55)] ${rotate} ${className}`}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={src} alt={alt} className="w-full aspect-square object-cover" loading="lazy" />
+      <p className="font-[family-name:var(--font-caveat)] text-center text-ink-soft text-base leading-tight mt-1">
+        {caption}
+      </p>
+    </div>
+  );
+}
+
+const HERO_PHOTOS: (PolaroidProps & { wrapClass: string })[] = [
   {
-    src: "https://images.unsplash.com/photo-1758275557330-cfd545444dc3?w=600&q=80&auto=format&fit=crop",
-    alt: "Friends laughing together in a group selfie",
-    wrapClass: "top-0 left-0 w-[58%] z-20",
+    src: "https://images.unsplash.com/photo-1672135620913-2e8dae4b46e2?w=600&q=80&auto=format&fit=crop",
+    alt: "Friends silhouetted on a hilltop at dusk",
+    caption: "same chaos. new place.",
+    wrapClass: "top-0 left-0 w-[56%] z-20",
     rotate: "-rotate-6",
-    note: "where are we going? ↙",
-    noteClass: "-top-7 right-0",
   },
   {
-    src: "https://images.unsplash.com/photo-1625463006115-09f08489f591?w=600&q=80&auto=format&fit=crop",
-    alt: "Friends huddled around a phone",
-    wrapClass: "top-4 right-0 w-[46%] z-10",
+    src: "https://images.unsplash.com/photo-1647413718245-964e133343a4?w=600&q=80&auto=format&fit=crop",
+    alt: "Friends sharing chai at a stall",
+    caption: "chai > plans?",
+    wrapClass: "top-6 right-0 w-[44%] z-10",
     rotate: "rotate-6",
   },
   {
-    src: "https://images.unsplash.com/photo-1623121181613-eeced17aea39?w=600&q=80&auto=format&fit=crop",
-    alt: "Friends talking at a cafe table",
-    wrapClass: "bottom-12 left-2 w-[50%] z-10",
+    src: "https://images.unsplash.com/photo-1571893652827-a3e071ab463b?w=600&q=80&auto=format&fit=crop",
+    alt: "An Indian train with friends leaning out the windows",
+    caption: "road trip >",
+    wrapClass: "top-[42%] right-[6%] w-[40%] z-20",
     rotate: "rotate-3",
-    note: "again? ↗",
-    noteClass: "-bottom-7 right-0",
   },
   {
-    src: "https://images.unsplash.com/photo-1501554728187-ce583db33af7?w=600&q=80&auto=format&fit=crop",
-    alt: "Friends looking out over a mountain view",
-    wrapClass: "bottom-0 right-0 w-[48%] z-20",
+    src: "https://images.unsplash.com/photo-1590767602124-234d1714ed92?w=600&q=80&auto=format&fit=crop",
+    alt: "Friends sitting on the beach at sunset",
+    caption: "this one, maybe?",
+    wrapClass: "bottom-14 left-2 w-[48%] z-10",
+    rotate: "rotate-2",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1475483768296-6163e08872a1?w=600&q=80&auto=format&fit=crop",
+    alt: "Friends around a campfire at night",
+    caption: "good people. better places.",
+    wrapClass: "bottom-0 right-0 w-[46%] z-20",
     rotate: "-rotate-3",
-    note: "locked.",
-    noteClass: "-bottom-7 left-2",
   },
 ];
 
 export function PhotoStack() {
   return (
-    <div className={`${caveat.variable} relative h-[400px] sm:h-[480px] w-full max-w-md mx-auto`}>
-      {PHOTOS.map((p) => (
-        <div key={p.src} className={`absolute ${p.wrapClass} ${p.rotate}`}>
-          <div className="bg-cream p-1.5 pb-1.5 shadow-[0_16px_32px_-10px_rgba(0,0,0,0.5)]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={p.src} alt={p.alt} className="w-full aspect-square object-cover" />
-          </div>
-          {p.note && (
-            <span
-              className={`absolute ${p.noteClass} font-[family-name:var(--font-caveat)] text-lg text-cream whitespace-nowrap`}
-            >
-              {p.note}
-            </span>
-          )}
-        </div>
+    <div className={`${caveat.variable} relative h-[460px] sm:h-[560px] w-full max-w-md mx-auto`}>
+      {HERO_PHOTOS.map((p) => (
+        <Polaroid
+          key={p.src}
+          src={p.src}
+          alt={p.alt}
+          caption={p.caption}
+          rotate={p.rotate}
+          className={`absolute ${p.wrapClass}`}
+        />
       ))}
     </div>
   );

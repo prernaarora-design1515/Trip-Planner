@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Fraunces } from "next/font/google";
 import { setIdentity } from "@/lib/client-identity";
+import { PolaroidWall } from "@/components/PolaroidWall";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -108,9 +109,14 @@ export default function HomePage() {
               <span className="italic font-normal">Actually decided.</span>
             </h1>
 
-            <p className="mt-6 max-w-md text-cream/70 text-base sm:text-lg leading-relaxed">
-              No more 1,200-message group chats. Everyone submits preferences once, the app scores the fit, and you
-              vote. It never picks for you.
+            <p className="mt-6 max-w-md text-xl sm:text-2xl font-[family-name:var(--font-fraunces)] italic text-flamingo">
+              17 opinions. 46 messages. Nobody actually decides.
+            </p>
+
+            <p className="mt-4 max-w-md text-cream/70 text-base sm:text-lg leading-relaxed">
+              Somewhere in your group chat is a trip that&rsquo;s been &ldquo;happening soon&rdquo; since March. Everyone fills in
+              their own preferences once, the app quietly does the math, and your group votes on an actual shortlist
+              instead of arguing in circles. It never picks for you — it just makes it impossible to keep stalling.
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-4">
@@ -120,10 +126,10 @@ export default function HomePage() {
                 disabled={demoLoading}
                 className="tap-target inline-flex items-center gap-2 rounded-full bg-flamingo px-6 py-3.5 text-sm font-semibold text-ink hover:brightness-95 transition disabled:opacity-50"
               >
-                {demoLoading ? "Setting up the demo..." : `${"⚡"} Load demo group`}
+                {demoLoading ? "Rounding up some fake friends..." : "See it decide (fake friends included)"}
               </button>
               <a href="#create" className="text-sm font-semibold text-cream/80 hover:text-cream underline underline-offset-4">
-                or build your own room {"↓"}
+                or subject your real friends to this {"↓"}
               </a>
             </div>
           </div>
@@ -143,11 +149,30 @@ export default function HomePage() {
         </svg>
       </section>
 
+      {/* ---------- THE (FICTIONAL) FRIEND GROUP ---------- */}
+      <section className="px-5 pt-16 pb-4 sm:pt-20">
+        <div className="max-w-md mx-auto sm:max-w-3xl text-center">
+          <span className="inline-block rounded-full bg-olive/10 text-olive-dark text-xs font-bold uppercase tracking-wider px-3 py-1 mb-4">
+            The cast
+          </span>
+          <h2 className="font-[family-name:var(--font-fraunces)] text-3xl sm:text-4xl leading-tight">
+            Meet the friends who can&apos;t decide anything.
+          </h2>
+          <p className="mt-3 text-muted max-w-md mx-auto">
+            Completely made up for this demo. Suspiciously accurate to every group chat you&apos;ve ever been in.
+          </p>
+        </div>
+
+        <div className="max-w-md mx-auto sm:max-w-4xl mt-12 mb-6">
+          <PolaroidWall />
+        </div>
+      </section>
+
       {/* ---------- CREATE ROOM ---------- */}
       <section id="create" className="px-5 py-16 sm:py-20">
         <div className="max-w-md mx-auto sm:max-w-lg">
           <span className="inline-block rounded-full bg-olive/10 text-olive-dark text-xs font-bold uppercase tracking-wider px-3 py-1 mb-4">
-            New room
+            Your turn
           </span>
 
           {error && (
@@ -158,7 +183,10 @@ export default function HomePage() {
             onSubmit={handleCreate}
             className="space-y-4 bg-white border border-cream-dim rounded-[2rem] p-6 sm:p-8 shadow-[0_20px_60px_-15px_rgba(20,18,15,0.25)]"
           >
-            <h2 className="font-[family-name:var(--font-fraunces)] text-3xl leading-tight">Create a trip room</h2>
+            <div>
+              <h2 className="font-[family-name:var(--font-fraunces)] text-3xl leading-tight">Start the group chat spin-off</h2>
+              <p className="text-sm text-muted mt-1.5">Real trip, real friends, hopefully less chaos.</p>
+            </div>
 
             <div>
               <label className="text-sm font-semibold block mb-1.5">Trip name</label>
@@ -249,9 +277,9 @@ export default function HomePage() {
       <section className="px-5 pb-20">
         <div className="max-w-md mx-auto sm:max-w-3xl grid gap-4 sm:grid-cols-3">
           {[
-            { tag: "01", title: "AI suggests", body: "8–10 candidate trips, scored against everyone's dates and budget." },
-            { tag: "02", title: "Code scores", body: "A plain veto filter drops anything that breaks a hard no. No AI opinions here." },
-            { tag: "03", title: "You decide", body: "Everyone votes. Once it's unanimous, the trip locks — for real." },
+            { tag: "01", title: "The AI throws out ideas", body: "8–10 places that could work, based on everyone's dates and budget. Just brainstorming, nothing final." },
+            { tag: "02", title: "The code plays bad cop", body: "Breaks someone's hard no or busts their budget? Gone. No AI vibes here — just math, applied unfairly to everyone equally." },
+            { tag: "03", title: "You actually decide", body: "Everyone votes once. The second it's unanimous, that's the trip — no take-backs, no reopening old arguments." },
           ].map((f) => (
             <div key={f.tag} className="rounded-2xl bg-olive text-cream p-5">
               <div className="font-[family-name:var(--font-fraunces)] italic text-2xl text-cream/50 mb-2">{f.tag}</div>
@@ -264,7 +292,7 @@ export default function HomePage() {
 
       {/* ---------- FOOTER ---------- */}
       <footer className="bg-ink text-cream/50 text-center text-xs py-6 px-5">
-        The app suggests and explains. It never picks the winner — only your group does.
+        The app suggests and explains. It never picks the winner — that argument is all yours.
       </footer>
     </main>
   );
